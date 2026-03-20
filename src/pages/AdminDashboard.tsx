@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, RefreshCw } from 'lucide-react';
+import { LogOut, RefreshCw, Tag } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { authService } from '../lib/auth';
 import AdminRequestTable, { FlightRequest } from '../components/AdminRequestTable';
@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const [requests, setRequests] = useState<FlightRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<'requests' | 'deals'>('requests');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-              <p className="mt-1 text-orange-100">Manage flight requests</p>
+              <p className="mt-1 text-orange-100">Manage flight requests and deals</p>
             </div>
             <div className="flex gap-3">
               <button
@@ -96,6 +97,36 @@ export default function AdminDashboard() {
                 Sign Out
               </button>
             </div>
+          </div>
+
+          <div className="flex gap-2 mt-6 border-b border-white/20">
+            <button
+              onClick={() => {
+                setActiveTab('requests');
+                navigate('/admin');
+              }}
+              className={`px-6 py-3 font-medium transition-all ${
+                activeTab === 'requests'
+                  ? 'bg-white/20 border-b-2 border-white'
+                  : 'hover:bg-white/10'
+              }`}
+            >
+              Flight Requests
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('deals');
+                navigate('/admin/deals');
+              }}
+              className={`px-6 py-3 font-medium transition-all flex items-center gap-2 ${
+                activeTab === 'deals'
+                  ? 'bg-white/20 border-b-2 border-white'
+                  : 'hover:bg-white/10'
+              }`}
+            >
+              <Tag className="w-4 h-4" />
+              Manage Deals
+            </button>
           </div>
         </div>
       </div>

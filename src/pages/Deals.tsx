@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tag, Filter, X, Check, Calendar, Users, MapPin, Utensils, Bed, Plane } from 'lucide-react';
 import DealCard from '../components/DealCard';
+import { supabase } from '../lib/supabase';
 
 interface Deal {
-  id: number;
+  id: string;
   category: string;
   destination: string;
   route: string;
@@ -24,128 +25,71 @@ interface Deal {
 export default function Deals() {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const filters = ['All', 'Flights', 'Packages', 'Cruises', 'Hotels'];
 
-  const deals: Deal[] = [
-    {
-      id: 1,
-      category: 'Flights',
-      destination: 'Miami Beach Getaway',
-      route: 'Kingston → Miami',
-      price: '299',
-      travelDates: 'Apr 15 - Apr 22, 2026',
-      imageUrl: 'https://images.pexels.com/photos/1456291/pexels-photo-1456291.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 2,
-      category: 'Packages',
-      destination: 'Punta Cana All-Inclusive',
-      route: 'Kingston → Punta Cana',
-      price: '599',
-      travelDates: 'May 1 - May 8, 2026',
-      imageUrl: 'https://images.pexels.com/photos/3601425/pexels-photo-3601425.jpeg?auto=compress&cs=tinysrgb&w=800',
-      details: {
-        description: 'Escape to paradise with this all-inclusive resort package in beautiful Punta Cana. Enjoy pristine beaches, crystal-clear waters, and world-class amenities.',
-        includes: ['Round-trip flights', 'Airport transfers', '7 nights accommodation', 'All meals and drinks', 'Daily activities and entertainment', 'Access to resort facilities'],
-        duration: '7 nights / 8 days',
-        groupSize: 'Perfect for couples and families',
-        accommodation: 'Deluxe oceanview room at 4-star resort',
-        meals: 'All-inclusive (breakfast, lunch, dinner, snacks, and beverages)',
-        highlights: ['Private beach access', 'Multiple swimming pools', 'Water sports included', 'Kids club available', 'Nightly entertainment', 'Spa facilities'],
-      },
-    },
-    {
-      id: 3,
-      category: 'Flights',
-      destination: 'New York City Explorer',
-      route: 'Kingston → New York',
-      price: '399',
-      travelDates: 'Jun 10 - Jun 17, 2026',
-      imageUrl: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 4,
-      category: 'Packages',
-      destination: 'Toronto Adventure',
-      route: 'Kingston → Toronto',
-      price: '449',
-      travelDates: 'Jul 5 - Jul 12, 2026',
-      imageUrl: 'https://images.pexels.com/photos/374870/pexels-photo-374870.jpeg?auto=compress&cs=tinysrgb&w=800',
-      details: {
-        description: 'Discover the vibrant city of Toronto with this comprehensive package. Experience world-class attractions, diverse cuisine, and unforgettable entertainment.',
-        includes: ['Round-trip flights', 'Airport transfers', '5 nights hotel accommodation', 'Daily breakfast', 'CN Tower admission', 'Niagara Falls day tour'],
-        duration: '5 nights / 6 days',
-        groupSize: 'Ideal for solo travelers, couples, and small groups',
-        accommodation: 'Downtown 3-star hotel with city views',
-        meals: 'Daily breakfast included',
-        highlights: ['CN Tower visit', 'Niagara Falls excursion', 'Toronto Island ferry', 'Distillery District tour', 'Royal Ontario Museum pass', 'Casa Loma admission'],
-      },
-    },
-    {
-      id: 5,
-      category: 'Packages',
-      destination: 'Bahamas Paradise',
-      route: 'Kingston → Nassau',
-      price: '699',
-      travelDates: 'Aug 1 - Aug 8, 2026',
-      imageUrl: 'https://images.pexels.com/photos/3225531/pexels-photo-3225531.jpeg?auto=compress&cs=tinysrgb&w=800',
-      details: {
-        description: 'Experience the ultimate tropical getaway in the stunning Bahamas. White sandy beaches, turquoise waters, and Caribbean hospitality await you.',
-        includes: ['Round-trip flights', 'Airport transfers', '6 nights beachfront accommodation', 'Daily breakfast and dinner', 'Island hopping tour', 'Snorkeling equipment', 'Welcome cocktail'],
-        duration: '6 nights / 7 days',
-        groupSize: 'Perfect for honeymooners and families',
-        accommodation: 'Beachfront suite at oceanside resort',
-        meals: 'Breakfast and dinner daily',
-        highlights: ['Private beach access', 'Island hopping adventure', 'Snorkeling at coral reefs', 'Water sports activities', 'Sunset cruise', 'Local cultural experience'],
-      },
-    },
-    {
-      id: 6,
-      category: 'Cruises',
-      destination: 'Caribbean Cruise',
-      route: 'Miami → Caribbean Islands',
-      price: '899',
-      travelDates: 'Sep 15 - Sep 22, 2026',
-      imageUrl: 'https://images.pexels.com/photos/1010657/pexels-photo-1010657.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 7,
-      category: 'Flights',
-      destination: 'Orlando Fun Trip',
-      route: 'Kingston → Orlando',
-      price: '349',
-      travelDates: 'Oct 10 - Oct 17, 2026',
-      imageUrl: 'https://images.pexels.com/photos/164337/pexels-photo-164337.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 8,
-      category: 'Hotels',
-      destination: 'Cancun Resort Stay',
-      route: 'Kingston → Cancun',
-      price: '549',
-      travelDates: 'Nov 5 - Nov 12, 2026',
-      imageUrl: 'https://images.pexels.com/photos/261101/pexels-photo-261101.jpeg?auto=compress&cs=tinysrgb&w=800',
-    },
-    {
-      id: 9,
-      category: 'Packages',
-      destination: 'Los Angeles Experience',
-      route: 'Kingston → Los Angeles',
-      price: '499',
-      travelDates: 'Dec 1 - Dec 8, 2026',
-      imageUrl: 'https://images.pexels.com/photos/442579/pexels-photo-442579.jpeg?auto=compress&cs=tinysrgb&w=800',
-      details: {
-        description: 'Explore the entertainment capital of the world! From Hollywood glamour to stunning beaches, experience the best of Los Angeles in this exciting package.',
-        includes: ['Round-trip flights', 'Airport transfers', '5 nights hotel accommodation', 'Daily breakfast', 'Universal Studios tickets', 'City tour', 'Car rental for 3 days'],
-        duration: '5 nights / 6 days',
-        groupSize: 'Great for families and groups',
-        accommodation: 'Hollywood area 3-star hotel',
-        meals: 'Daily breakfast',
-        highlights: ['Universal Studios day pass', 'Hollywood Walk of Fame tour', 'Santa Monica Pier visit', 'Beverly Hills shopping', 'Getty Center admission', 'Venice Beach experience'],
-      },
-    },
-  ];
+  useEffect(() => {
+    fetchDeals();
+  }, []);
+
+  const fetchDeals = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('deals')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedDeals: Deal[] = (data || []).map((deal) => ({
+        id: deal.id,
+        category: deal.type,
+        destination: deal.name,
+        route: deal.route,
+        price: deal.price_per_person.toString(),
+        travelDates: formatDateRange(deal.travel_start_date, deal.travel_end_date),
+        imageUrl: deal.image_url,
+        details:
+          deal.type === 'Packages' && deal.description
+            ? {
+                description: deal.description,
+                includes: deal.includes || [],
+                duration: deal.duration || '',
+                groupSize: deal.group_size || '',
+                accommodation: deal.accommodation || '',
+                meals: deal.meals || '',
+                highlights: deal.highlights || [],
+              }
+            : undefined,
+      }));
+
+      setDeals(formattedDeals);
+    } catch (error) {
+      console.error('Error fetching deals:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDateRange = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const startFormatted = start.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const endFormatted = end.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    return `${startFormatted} - ${endFormatted}`;
+  };
 
   const filteredDeals = selectedFilter === 'All'
     ? deals
@@ -208,26 +152,47 @@ export default function Deals() {
       {/* Deals Grid */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <p className="text-gray-600">
-              Showing <span className="font-semibold">{filteredDeals.length}</span> {selectedFilter === 'All' ? '' : selectedFilter} deal{filteredDeals.length !== 1 ? 's' : ''}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredDeals.map((deal) => (
-              <DealCard
-                key={deal.id}
-                destination={deal.destination}
-                route={deal.route}
-                price={deal.price}
-                travelDates={deal.travelDates}
-                imageUrl={deal.imageUrl}
-                category={deal.category}
-                onBookNow={handleBookNow}
-                onMoreInfo={deal.category === 'Packages' && deal.details ? () => handleMoreInfo(deal) : undefined}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+              <p className="mt-4 text-gray-600">Loading deals...</p>
+            </div>
+          ) : filteredDeals.length === 0 ? (
+            <div className="text-center py-12">
+              <Tag className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+              <p className="text-gray-600 text-lg">No deals available at the moment.</p>
+              <p className="text-gray-500 mt-2">Check back soon for amazing travel offers!</p>
+            </div>
+          ) : (
+            <>
+              <div className="mb-8">
+                <p className="text-gray-600">
+                  Showing <span className="font-semibold">{filteredDeals.length}</span>{' '}
+                  {selectedFilter === 'All' ? '' : selectedFilter} deal
+                  {filteredDeals.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredDeals.map((deal) => (
+                  <DealCard
+                    key={deal.id}
+                    destination={deal.destination}
+                    route={deal.route}
+                    price={deal.price}
+                    travelDates={deal.travelDates}
+                    imageUrl={deal.imageUrl}
+                    category={deal.category}
+                    onBookNow={handleBookNow}
+                    onMoreInfo={
+                      deal.category === 'Packages' && deal.details
+                        ? () => handleMoreInfo(deal)
+                        : undefined
+                    }
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 

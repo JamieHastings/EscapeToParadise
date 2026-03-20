@@ -7,6 +7,7 @@ import Deals from './pages/Deals';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminDeals from './pages/AdminDeals';
 import RequestDetail from './pages/RequestDetail';
 
 function App() {
@@ -15,7 +16,9 @@ function App() {
       <div className="min-h-screen flex flex-col">
         <Routes>
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/deals" element={<AdminDeals />} />
           <Route path="/admin/requests/:id" element={<RequestDetail />} />
           <Route
             path="*"
