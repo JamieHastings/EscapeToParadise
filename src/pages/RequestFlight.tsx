@@ -1,6 +1,8 @@
 import { useState, FormEvent } from 'react';
-import { Plane, User, Mail, Phone, MapPin, Calendar, Users, DollarSign, Clock, FileText } from 'lucide-react';
+import { Plane, User, Mail, Phone, Calendar, Users, DollarSign, Clock, FileText } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import CityAutocomplete from '../components/CityAutocomplete';
+import { Airport } from '../data/airports';
 
 export default function RequestFlight() {
   const [formData, setFormData] = useState({
@@ -251,41 +253,27 @@ export default function RequestFlight() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="from_city" className="block text-sm font-semibold text-gray-700 mb-2">
-                    From (City or Airport) *
-                  </label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
-                      id="from_city"
-                      required
-                      value={formData.from_city}
-                      onChange={(e) => setFormData({ ...formData, from_city: e.target.value })}
-                      placeholder="e.g., New York or JFK"
-                      className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                    />
-                  </div>
-                </div>
+                <CityAutocomplete
+                  id="from_city"
+                  value={formData.from_city}
+                  onChange={(value: string, airport?: Airport) => {
+                    setFormData({ ...formData, from_city: value });
+                  }}
+                  placeholder="e.g., New York or JFK"
+                  required
+                  label="From (City or Airport)"
+                />
 
-                <div>
-                  <label htmlFor="to_city" className="block text-sm font-semibold text-gray-700 mb-2">
-                    To (City or Airport) *
-                  </label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
-                      id="to_city"
-                      required
-                      value={formData.to_city}
-                      onChange={(e) => setFormData({ ...formData, to_city: e.target.value })}
-                      placeholder="e.g., Miami or MIA"
-                      className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                    />
-                  </div>
-                </div>
+                <CityAutocomplete
+                  id="to_city"
+                  value={formData.to_city}
+                  onChange={(value: string, airport?: Airport) => {
+                    setFormData({ ...formData, to_city: value });
+                  }}
+                  placeholder="e.g., Miami or MIA"
+                  required
+                  label="To (City or Airport)"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
