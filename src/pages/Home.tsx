@@ -34,6 +34,11 @@ export default function Home() {
       imageUrl: 'https://images.pexels.com/photos/3225531/pexels-photo-3225531.jpeg?auto=compress&cs=tinysrgb&w=800',
       description: 'Tropical paradise with pristine beaches and turquoise waters',
     },
+    {
+      name: 'London',
+      imageUrl: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=800',
+      description: 'Historic landmarks, royal palaces, and world-class museums',
+    },
   ];
 
   const deals = [
@@ -139,23 +144,23 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Plan Your Dream Vacation With a Trusted Travel Agent
+              Request Your Perfect Flight
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-orange-100">
-              Find the best flights, hotels, cruises, and vacation packages with personalized support
+              Tell us where you want to go and our travel experts will find the best flight options for you
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                onClick={() => navigate('/search-flights')}
+                onClick={() => navigate('/request-flight')}
                 className="bg-white text-orange-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
               >
-                Search Flights
+                Request a Flight
               </button>
               <button
-                onClick={() => navigate('/plan-trip')}
+                onClick={() => navigate('/contact')}
                 className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-orange-600 transition-all transform hover:scale-105"
               >
-                Plan My Trip
+                Contact Agent
               </button>
             </div>
           </div>
