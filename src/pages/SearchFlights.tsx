@@ -1,7 +1,9 @@
 import { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plane, Calendar, DollarSign, Search } from 'lucide-react';
 
 export default function SearchFlights() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     from: '',
     to: '',
@@ -22,23 +24,9 @@ export default function SearchFlights() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setIsSearching(true);
-
-    // Construct InteleTravel URL with search parameters
-    const params = new URLSearchParams();
-    if (formData.from) params.append('from', formData.from);
-    if (formData.to) params.append('to', formData.to);
-    if (formData.departDate) params.append('depart', formData.departDate);
-    if (formData.returnDate) params.append('return', formData.returnDate);
-    if (formData.budget) params.append('budget', formData.budget);
-
-    // Replace with actual InteleTravel portal URL
-    const inteletravelUrl = `https://www.inteletravel.com/flights?${params.toString()}`;
-
-    // Redirect to InteleTravel portal
     setTimeout(() => {
-      window.open(inteletravelUrl, '_blank');
-      setIsSearching(false);
-    }, 500);
+      navigate('/request-flight');
+    }, 400);
   };
 
   const handleQuickRoute = (route: typeof popularRoutes[0]) => {
@@ -181,10 +169,10 @@ export default function SearchFlights() {
             </form>
 
             {/* Info Box */}
-            <div className="mt-6 p-4 bg-orange-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Note:</strong> You will be redirected to our InteleTravel booking portal to
-                complete your flight search and reservation.
+            <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+              <p className="text-sm text-orange-800">
+                <strong>Note:</strong> You will be taken to the flight request form where Audrey will
+                find the best options for you.
               </p>
             </div>
           </div>

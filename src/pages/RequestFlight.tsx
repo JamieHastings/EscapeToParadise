@@ -46,13 +46,6 @@ export default function RequestFlight() {
 
       if (error) throw error;
 
-      console.log('🎉 New flight request received!', {
-        from: formData.from_city,
-        to: formData.to_city,
-        customer: formData.name,
-        email: formData.email,
-      });
-
       setShowSuccess(true);
       setFormData({
         name: '',

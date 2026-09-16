@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../lib/auth';
+import { isSupabaseConfigured } from '../lib/supabase';
 import { LogIn, Plane } from 'lucide-react';
 
 export default function AdminLogin() {
@@ -42,6 +43,14 @@ export default function AdminLogin() {
           <p className="text-center text-gray-600 mb-8">
             Sign in to manage flight requests
           </p>
+
+          {!isSupabaseConfigured && (
+            <div className="bg-amber-50 border border-amber-200 text-amber-900 px-4 py-3 rounded-lg mb-6 text-sm">
+              Supabase env vars are missing. Create <code className="font-mono">.env</code> with{' '}
+              <code className="font-mono">VITE_SUPABASE_URL</code> and{' '}
+              <code className="font-mono">VITE_SUPABASE_ANON_KEY</code> for login and data features.
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">

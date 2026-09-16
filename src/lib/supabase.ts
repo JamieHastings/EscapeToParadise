@@ -1,13 +1,22 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.trim();
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim();
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// App imports all route modules up front, so this module always loads. A hard
+// throw here blanked the UI when .env was missing. Use placeholders so the
+// marketing site runs locally; real Supabase calls fail until env is set.
+const resolvedUrl = isSupabaseConfigured
+  ? supabaseUrl!
+  : 'https://local-dev-placeholder.supabase.co';
+
+const resolvedKey = isSupabaseConfigured
+  ? supabaseAnonKey!
+  : 'local-dev-placeholder-anon-key';
+
+export const supabase = createClient(resolvedUrl, resolvedKey);
 
 export interface TripRequest {
   id?: string;

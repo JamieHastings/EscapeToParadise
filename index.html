@@ -2,12 +2,146 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+    <!-- =============================================
+         BROWSER TAB & DEVICE ICONS
+    ============================================= -->
+    <link rel="icon" type="image/jpeg" href="/Escape_to_Paradise_Logo.jpeg" />
+    <link rel="apple-touch-icon" href="/Escape_to_Paradise_Logo.jpeg" />
+    <meta name="theme-color" content="#f97316" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Escape to Paradise - Your Trusted Travel Agent</title>
-    <meta property="og:image" content="https://bolt.new/static/og_default.png" />
+
+    <!-- =============================================
+         PRIMARY SEO — Title & Description
+         (What Google shows in search results)
+    ============================================= -->
+    <title>Escape to Paradise Travel Agency | Certified Travel Agent | Jamaica</title>
+    <meta
+      name="description"
+      content="Escape to Paradise is a certified travel agency led by Audrey Hastings, an InteleTravel agent with 40+ years of experience. We specialise in personalised flights, vacation packages, cruises, and international travel planning. Your dream vacation starts here."
+    />
+    <meta
+      name="keywords"
+      content="travel agent Jamaica, travel agency Jamaica, Escape to Paradise Travel, Audrey Hastings travel agent, vacation packages Jamaica, flight booking Jamaica, cruise packages Caribbean, InteleTravel agent Jamaica, personalized travel planning, honeymoon packages Jamaica, family vacation Jamaica, Punta Cana packages, Miami flights from Kingston, international travel agent Jamaica"
+    />
+    <meta name="author" content="Audrey Hastings — Escape to Paradise Travel Agency" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Update the URL below once your site is live at its real domain -->
+    <link rel="canonical" href="https://www.escapetoparadise.com/" />
+
+    <!-- =============================================
+         OPEN GRAPH
+         (Logo & details shown when shared on
+         WhatsApp, Facebook, iMessage, Google etc.)
+         Update the domain once your site is live.
+    ============================================= -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Escape to Paradise Travel Agency" />
+    <meta property="og:title" content="Escape to Paradise Travel Agency | Certified Travel Agent | Jamaica" />
+    <meta
+      property="og:description"
+      content="Plan your dream vacation with Audrey Hastings — a certified InteleTravel agent with 40+ years of experience. Flights, packages, cruises and more, personalised just for you."
+    />
+    <meta property="og:url" content="https://www.escapetoparadise.com/" />
+    <meta property="og:image" content="https://www.escapetoparadise.com/Escape_to_Paradise_Logo.jpeg" />
+    <meta property="og:image:width" content="800" />
+    <meta property="og:image:height" content="800" />
+    <meta property="og:image:alt" content="Escape to Paradise Travel Agency Logo" />
+    <meta property="og:locale" content="en_JM" />
+
+    <!-- =============================================
+         TWITTER / X CARD
+    ============================================= -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
+    <meta name="twitter:title" content="Escape to Paradise Travel Agency | Certified Travel Agent" />
+    <meta
+      name="twitter:description"
+      content="Plan your dream vacation with Audrey Hastings — certified InteleTravel agent with 40+ years of experience. Flights, packages, cruises & more."
+    />
+    <meta name="twitter:image" content="https://www.escapetoparadise.com/Escape_to_Paradise_Logo.jpeg" />
+
+    <!-- =============================================
+         GEOGRAPHIC SIGNALS
+         Helps Google associate the business with Jamaica
+    ============================================= -->
+    <meta name="geo.region" content="JM" />
+    <meta name="geo.placename" content="Jamaica" />
+
+    <!-- =============================================
+         STRUCTURED DATA — JSON-LD
+         This is what Google reads to understand your
+         business and show it in search results,
+         knowledge panels, and map listings.
+    ============================================= -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "Escape to Paradise Travel Agency",
+      "alternateName": "Escape to Paradise",
+      "description": "Escape to Paradise is a certified travel agency based in Jamaica, founded by Audrey Hastings. We specialise in personalised flight bookings, vacation packages, cruise packages, hotel reservations, honeymoon planning, and international travel for individuals, couples, and families. As a certified InteleTravel agent with over 40 years of sales experience, Audrey Hastings delivers expert guidance, stress-free planning, and unforgettable travel experiences tailored to your budget and preferences.",
+      "url": "https://www.escapetoparadise.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.escapetoparadise.com/Escape_to_Paradise_Logo.jpeg",
+        "caption": "Escape to Paradise Travel Agency Logo"
+      },
+      "image": "https://www.escapetoparadise.com/Escape_to_Paradise_Logo.jpeg",
+      "founder": {
+        "@type": "Person",
+        "name": "Audrey Hastings",
+        "jobTitle": "Certified Travel Agent",
+        "description": "Audrey Hastings is a Certified Travel Agent with InteleTravel, bringing over 40 years of experience in Sales and 26 years in Management to every client she serves.",
+        "hasCredential": {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "Certified Travel Agent",
+          "recognizedBy": {
+            "@type": "Organization",
+            "name": "InteleTravel"
+          }
+        }
+      },
+      "areaServed": [
+        { "@type": "Country", "name": "Jamaica" },
+        { "@type": "Country", "name": "United States" },
+        { "@type": "Country", "name": "Canada" },
+        { "@type": "Country", "name": "United Kingdom" },
+        { "@type": "AdministrativeArea", "name": "Caribbean" }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Travel Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Flight Booking", "description": "Personalised flight booking service with competitive prices for domestic and international routes." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Vacation Packages", "description": "All-inclusive vacation packages combining flights, hotels, and activities tailored to your budget." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cruise Packages", "description": "Exclusive cruise deals with top cruise lines to Caribbean and international destinations." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Hotel Reservations", "description": "Handpicked hotel accommodations from budget-friendly to luxury, worldwide." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Honeymoon Planning", "description": "Romantic honeymoon packages personalised to create unforgettable memories." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Family Vacation Planning", "description": "Stress-free family vacation planning with options for every age and budget." } }
+        ]
+      },
+      "knowsAbout": [
+        "Flight Booking",
+        "Vacation Packages",
+        "Cruise Packages",
+        "Hotel Reservations",
+        "Honeymoon Planning",
+        "Caribbean Travel",
+        "International Travel",
+        "Family Vacations",
+        "Romantic Getaways",
+        "Travel to Miami",
+        "Travel to Punta Cana",
+        "Travel to New York",
+        "Travel to Toronto",
+        "Travel to the Bahamas",
+        "Travel to London"
+      ],
+      "slogan": "Escape the ordinary. Discover Paradise.",
+      "keywords": "travel agent Jamaica, vacation packages, cruise packages, flight booking, InteleTravel, Audrey Hastings"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

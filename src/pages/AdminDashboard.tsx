@@ -14,13 +14,14 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     checkAuth();
-    loadRequests();
   }, []);
 
   const checkAuth = async () => {
     const user = await authService.getCurrentUser();
     if (!user) {
       navigate('/admin/login');
+    } else {
+      loadRequests();
     }
   };
 

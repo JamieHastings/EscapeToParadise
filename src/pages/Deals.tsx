@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Tag, Filter, X, Check, Calendar, Users, MapPin, Utensils, Bed, Plane } from 'lucide-react';
 import DealCard from '../components/DealCard';
 import { supabase } from '../lib/supabase';
@@ -23,6 +24,7 @@ interface Deal {
 }
 
 export default function Deals() {
+  const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
@@ -96,7 +98,7 @@ export default function Deals() {
     : deals.filter(deal => deal.category === selectedFilter);
 
   const handleBookNow = () => {
-    window.open('https://www.inteletravel.com', '_blank');
+    navigate('/plan-trip');
   };
 
   const handleMoreInfo = (deal: Deal) => {
@@ -369,12 +371,8 @@ export default function Deals() {
                 className="w-full bg-gradient-to-r from-orange-500 to-teal-500 text-white py-4 rounded-lg font-semibold text-lg hover:from-orange-600 hover:to-teal-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
               >
                 <Plane className="h-5 w-5 mr-2" />
-                Book Now
+                Request This Deal
               </button>
-
-              <p className="text-center text-sm text-gray-500 mt-4">
-                You'll be redirected to our booking partner to complete your reservation
-              </p>
             </div>
           </div>
         </div>

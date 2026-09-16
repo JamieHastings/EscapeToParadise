@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Filter, Search } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { authService } from '../lib/auth';
 import AdminDealsTable, { Deal } from '../components/AdminDealsTable';
 import DealFormModal from '../components/DealFormModal';
 
@@ -12,12 +14,22 @@ export default function AdminDeals() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null);
+  const navigate = useNavigate();
 
   const filters = ['All', 'Flights', 'Packages', 'Cruises', 'Hotels'];
 
   useEffect(() => {
-    fetchDeals();
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    const user = await authService.getCurrentUser();
+    if (!user) {
+      navigate('/admin/login');
+    } else {
+      fetchDeals();
+    }
+  };
 
   useEffect(() => {
     filterDeals();

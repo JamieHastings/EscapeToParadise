@@ -14,15 +14,14 @@ export default function RequestDetail() {
 
   useEffect(() => {
     checkAuth();
-    if (id) {
-      loadRequest(id);
-    }
   }, [id]);
 
   const checkAuth = async () => {
     const user = await authService.getCurrentUser();
     if (!user) {
       navigate('/admin/login');
+    } else if (id) {
+      loadRequest(id);
     }
   };
 

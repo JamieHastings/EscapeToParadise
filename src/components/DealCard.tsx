@@ -57,7 +57,7 @@ export default function DealCard({ destination, route, price, travelDates, image
             onClick={onBookNow}
             className="w-full bg-gradient-to-r from-orange-500 to-teal-500 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-teal-600 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            Book Now
+            Request This Deal
           </button>
         )}
       </div>

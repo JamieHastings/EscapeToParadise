@@ -273,25 +273,6 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* Additional Info Section */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-              Prefer to Book Directly?
-            </h2>
-            <p className="text-gray-600 mb-6">
-              You can also browse and book through our InteleTravel portal
-            </p>
-            <button
-              onClick={() => window.open('https://www.inteletravel.com', '_blank')}
-              className="bg-gradient-to-r from-orange-500 to-teal-500 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all shadow-md hover:shadow-lg"
-            >
-              Visit Booking Portal
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
