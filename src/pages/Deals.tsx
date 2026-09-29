@@ -39,10 +39,12 @@ export default function Deals() {
   const fetchDeals = async () => {
     try {
       setLoading(true);
+      const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('deals')
         .select('*')
         .eq('is_active', true)
+        .or(`expires_at.is.null,expires_at.gte.${today}`)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -185,11 +187,7 @@ export default function Deals() {
                     imageUrl={deal.imageUrl}
                     category={deal.category}
                     onBookNow={handleBookNow}
-                    onMoreInfo={
-                      deal.category === 'Packages' && deal.details
-                        ? () => handleMoreInfo(deal)
-                        : undefined
-                    }
+                    onMoreInfo={() => handleMoreInfo(deal)}
                   />
                 ))}
               </div>
@@ -252,8 +250,8 @@ export default function Deals() {
         </div>
       </section>
 
-      {/* Package Details Modal */}
-      {selectedDeal && selectedDeal.details && (
+      {/* Deal Details Modal */}
+      {selectedDeal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             {/* Modal Header */}
@@ -284,7 +282,9 @@ export default function Deals() {
                     <Calendar className="h-5 w-5 mr-2 text-teal-500" />
                     <span>{selectedDeal.travelDates}</span>
                   </div>
-                  <div className="text-sm text-gray-500">{selectedDeal.details.duration}</div>
+                  {selectedDeal.details?.duration && (
+                    <div className="text-sm text-gray-500">{selectedDeal.details.duration}</div>
+                  )}
                 </div>
                 <div className="text-right">
                   <div className="text-sm text-gray-600">Starting from</div>
@@ -294,80 +294,105 @@ export default function Deals() {
               </div>
 
               {/* Description */}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">About This Package</h3>
-                <p className="text-gray-600 leading-relaxed">{selectedDeal.details.description}</p>
-              </div>
+              {selectedDeal.details?.description && (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">About This Package</h3>
+                  <p className="text-gray-600 leading-relaxed">{selectedDeal.details.description}</p>
+                </div>
+              )}
 
               {/* Quick Info */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-orange-50 p-4 rounded-lg">
-                  <div className="flex items-center mb-2">
-                    <Calendar className="h-5 w-5 text-orange-600 mr-2" />
-                    <span className="font-semibold text-gray-900">Duration</span>
-                  </div>
-                  <p className="text-gray-600 text-sm">{selectedDeal.details.duration}</p>
+              {(selectedDeal.details?.duration || selectedDeal.details?.groupSize || selectedDeal.details?.accommodation) && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  {selectedDeal.details?.duration && (
+                    <div className="bg-orange-50 p-4 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <Calendar className="h-5 w-5 text-orange-600 mr-2" />
+                        <span className="font-semibold text-gray-900">Duration</span>
+                      </div>
+                      <p className="text-gray-600 text-sm">{selectedDeal.details.duration}</p>
+                    </div>
+                  )}
+                  {selectedDeal.details?.groupSize && (
+                    <div className="bg-teal-50 p-4 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <Users className="h-5 w-5 text-teal-600 mr-2" />
+                        <span className="font-semibold text-gray-900">Group Size</span>
+                      </div>
+                      <p className="text-gray-600 text-sm">{selectedDeal.details.groupSize}</p>
+                    </div>
+                  )}
+                  {selectedDeal.details?.accommodation && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <Bed className="h-5 w-5 text-blue-600 mr-2" />
+                        <span className="font-semibold text-gray-900">Accommodation</span>
+                      </div>
+                      <p className="text-gray-600 text-sm">{selectedDeal.details.accommodation}</p>
+                    </div>
+                  )}
                 </div>
-                <div className="bg-teal-50 p-4 rounded-lg">
-                  <div className="flex items-center mb-2">
-                    <Users className="h-5 w-5 text-teal-600 mr-2" />
-                    <span className="font-semibold text-gray-900">Group Size</span>
-                  </div>
-                  <p className="text-gray-600 text-sm">{selectedDeal.details.groupSize}</p>
-                </div>
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="flex items-center mb-2">
-                    <Bed className="h-5 w-5 text-blue-600 mr-2" />
-                    <span className="font-semibold text-gray-900">Accommodation</span>
-                  </div>
-                  <p className="text-gray-600 text-sm">{selectedDeal.details.accommodation}</p>
-                </div>
-              </div>
+              )}
 
               {/* What's Included */}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
-                  <Check className="h-6 w-6 text-green-600 mr-2" />
-                  What's Included
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {selectedDeal.details.includes.map((item, index) => (
-                    <div key={index} className="flex items-start">
-                      <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700">{item}</span>
-                    </div>
-                  ))}
+              {selectedDeal.details?.includes && selectedDeal.details.includes.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <Check className="h-6 w-6 text-green-600 mr-2" />
+                    What's Included
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedDeal.details.includes.map((item, index) => (
+                      <div key={index} className="flex items-start">
+                        <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Meals */}
-              <div className="mb-6 bg-gray-50 p-4 rounded-lg">
-                <div className="flex items-center mb-2">
-                  <Utensils className="h-5 w-5 text-orange-600 mr-2" />
-                  <span className="font-semibold text-gray-900">Meals Included</span>
+              {selectedDeal.details?.meals && (
+                <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+                  <div className="flex items-center mb-2">
+                    <Utensils className="h-5 w-5 text-orange-600 mr-2" />
+                    <span className="font-semibold text-gray-900">Meals Included</span>
+                  </div>
+                  <p className="text-gray-600">{selectedDeal.details.meals}</p>
                 </div>
-                <p className="text-gray-600">{selectedDeal.details.meals}</p>
-              </div>
+              )}
 
               {/* Highlights */}
-              <div className="mb-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
-                  <MapPin className="h-6 w-6 text-orange-600 mr-2" />
-                  Package Highlights
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {selectedDeal.details.highlights.map((highlight, index) => (
-                    <div key={index} className="flex items-start">
-                      <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-2 flex-shrink-0"></div>
-                      <span className="text-gray-700">{highlight}</span>
-                    </div>
-                  ))}
+              {selectedDeal.details?.highlights && selectedDeal.details.highlights.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <MapPin className="h-6 w-6 text-orange-600 mr-2" />
+                    Package Highlights
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedDeal.details.highlights.map((highlight, index) => (
+                      <div key={index} className="flex items-start">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-700">{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Book Now Button */}
+              {/* Request Button */}
               <button
-                onClick={handleBookNow}
+                onClick={() =>
+                  navigate('/request-deal', {
+                    state: {
+                      dealName: selectedDeal.destination,
+                      dealRoute: selectedDeal.route,
+                      dealPrice: selectedDeal.price,
+                      dealDates: selectedDeal.travelDates,
+                    },
+                  })
+                }
                 className="w-full bg-gradient-to-r from-orange-500 to-teal-500 text-white py-4 rounded-lg font-semibold text-lg hover:from-orange-600 hover:to-teal-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
               >
                 <Plane className="h-5 w-5 mr-2" />

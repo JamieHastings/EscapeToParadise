@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Filter, Search } from 'lucide-react';
+import { Plus, Filter, Search, ArrowLeft } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { authService } from '../lib/auth';
 import AdminDealsTable, { Deal } from '../components/AdminDealsTable';
@@ -44,7 +44,31 @@ export default function AdminDeals() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDeals(data || []);
+
+      const allDeals = data || [];
+      const today = new Date().toISOString().split('T')[0];
+
+      // Auto-deactivate any active deals whose expiry date has passed
+      const toDeactivate = allDeals.filter(
+        (d) => d.is_active && d.expires_at && d.expires_at < today
+      );
+
+      if (toDeactivate.length > 0) {
+        await supabase
+          .from('deals')
+          .update({ is_active: false })
+          .in('id', toDeactivate.map((d) => d.id));
+
+        const { data: refreshed, error: refreshError } = await supabase
+          .from('deals')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (refreshError) throw refreshError;
+        setDeals(refreshed || []);
+      } else {
+        setDeals(allDeals);
+      }
     } catch (error) {
       console.error('Error fetching deals:', error);
       alert('Failed to load deals. Please refresh the page.');
@@ -167,6 +191,13 @@ export default function AdminDeals() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
+          <button
+            onClick={() => navigate('/admin/dashboard')}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Dashboard
+          </button>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Deals</h1>
           <p className="text-gray-600">Create and manage travel deals for the Deals page</p>
         </div>

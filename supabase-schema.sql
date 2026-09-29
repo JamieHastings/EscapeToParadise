@@ -149,9 +149,27 @@ create table if not exists newsletter_subscribers (
 
 
 -- ============================================================
--- 6. Row Level Security (RLS)
+-- 6. admins
+--    Stores which auth.users are admins. Managed manually.
+-- ============================================================
+create table if not exists admins (
+  user_id    uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz default now()
+);
+
+-- Helper function: returns true if the current session belongs to an admin.
+-- security definer so it can read the admins table regardless of RLS.
+create or replace function is_admin()
+returns boolean language sql security definer set search_path = public stable as $
+  select exists (select 1 from admins where user_id = auth.uid());
+$;
+
+
+-- ============================================================
+-- 7. Row Level Security (RLS)
 -- ============================================================
 
+alter table admins              enable row level security;
 alter table flight_requests     enable row level security;
 alter table trip_requests       enable row level security;
 alter table contact_submissions enable row level security;
@@ -159,63 +177,42 @@ alter table deals               enable row level security;
 alter table newsletter_subscribers enable row level security;
 
 -- ── flight_requests ──────────────────────────────────────────
--- Public can submit; only admin (authenticated) can view/manage
-create policy "Public can submit flight requests"
-  on flight_requests for insert to anon
+-- Public can submit; only admins (via is_admin()) can view/manage
+create policy "public submit flights"
+  on flight_requests for insert
   with check (true);
 
-create policy "Authenticated can view flight requests"
-  on flight_requests for select to authenticated
-  using (true);
-
-create policy "Authenticated can update flight requests"
-  on flight_requests for update to authenticated
-  using (true);
-
-create policy "Authenticated can delete flight requests"
-  on flight_requests for delete to authenticated
-  using (true);
+create policy "admins manage flights"
+  on flight_requests for all
+  using (is_admin()) with check (is_admin());
 
 -- ── trip_requests ─────────────────────────────────────────────
-create policy "Public can submit trip requests"
-  on trip_requests for insert to anon
+create policy "public submit trips"
+  on trip_requests for insert
   with check (true);
 
-create policy "Authenticated can view trip requests"
-  on trip_requests for select to authenticated
-  using (true);
-
-create policy "Authenticated can update trip requests"
-  on trip_requests for update to authenticated
-  using (true);
-
-create policy "Authenticated can delete trip requests"
-  on trip_requests for delete to authenticated
-  using (true);
+create policy "admins manage trips"
+  on trip_requests for all
+  using (is_admin()) with check (is_admin());
 
 -- ── contact_submissions ───────────────────────────────────────
-create policy "Public can submit contact forms"
-  on contact_submissions for insert to anon
+create policy "public submit contact"
+  on contact_submissions for insert
   with check (true);
 
-create policy "Authenticated can view contact submissions"
-  on contact_submissions for select to authenticated
-  using (true);
-
-create policy "Authenticated can delete contact submissions"
-  on contact_submissions for delete to authenticated
-  using (true);
+create policy "admins manage contact"
+  on contact_submissions for all
+  using (is_admin()) with check (is_admin());
 
 -- ── deals ─────────────────────────────────────────────────────
--- Public can view active deals; only admin can create/edit/delete
-create policy "Public can view active deals"
-  on deals for select to anon, authenticated
+-- Public can view active deals; only admins can create/edit/delete
+create policy "public read deals"
+  on deals for select
   using (is_active = true);
 
-create policy "Authenticated can manage all deals"
-  on deals for all to authenticated
-  using (true)
-  with check (true);
+create policy "admins manage deals"
+  on deals for all
+  using (is_admin()) with check (is_admin());
 
 -- ── newsletter_subscribers ────────────────────────────────────
 create policy "Public can subscribe"

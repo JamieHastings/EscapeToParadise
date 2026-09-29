@@ -119,7 +119,7 @@ export default function RequestFlight() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-orange-500 font-bold">2.</span>
-                    <span>We'll search for the best available flights through our InteleTravel portal</span>
+                    <span>We'll search for the best available flights</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-orange-500 font-bold">3.</span>

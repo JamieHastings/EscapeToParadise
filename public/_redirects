@@ -1,0 +1,2 @@
+/admin    https://admin.escape2paradisetravels.com/admin/dashboard    301
+/admin/*  https://admin.escape2paradisetravels.com/admin/:splat        301

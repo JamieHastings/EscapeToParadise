@@ -1,4 +1,4 @@
-import { CreditCard as Edit, Trash2, ToggleLeft, ToggleRight, Copy } from 'lucide-react';
+import { CreditCard as Edit, Trash2, ToggleLeft, ToggleRight, Copy, Clock } from 'lucide-react';
 
 export interface Deal {
   id: string;
@@ -9,6 +9,7 @@ export interface Deal {
   price_per_person: number;
   travel_start_date: string;
   travel_end_date: string;
+  expires_at: string | null;
   image_url: string;
   description: string | null;
   includes: string[] | null;
@@ -37,12 +38,28 @@ export default function AdminDealsTable({
   onToggleActive,
   onDuplicate,
 }: AdminDealsTableProps) {
+  const today = new Date().toISOString().split('T')[0];
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     });
+  };
+
+  const isExpired = (expiresAt: string | null) =>
+    expiresAt !== null && expiresAt < today;
+
+  const expiresLabel = (expiresAt: string | null) => {
+    if (!expiresAt) return null;
+    const daysLeft = Math.ceil(
+      (new Date(expiresAt).getTime() - new Date(today).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (daysLeft < 0) return 'Expired';
+    if (daysLeft === 0) return 'Expires today';
+    if (daysLeft <= 3) return `${daysLeft}d left`;
+    return null;
   };
 
   const formatPrice = (price: number) => {
@@ -64,6 +81,7 @@ export default function AdminDealsTable({
               <th className="px-6 py-4 text-left text-sm font-semibold">Destination</th>
               <th className="px-6 py-4 text-left text-sm font-semibold">Price</th>
               <th className="px-6 py-4 text-left text-sm font-semibold">Travel Dates</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold">Expires</th>
               <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
               <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
             </tr>
@@ -71,7 +89,7 @@ export default function AdminDealsTable({
           <tbody className="divide-y divide-gray-200">
             {deals.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
                   No deals yet. Click "Add New Deal" to create your first deal.
                 </td>
               </tr>
@@ -93,8 +111,32 @@ export default function AdminDealsTable({
                   <td className="px-6 py-4 text-sm text-gray-700">
                     {formatDate(deal.travel_start_date)} - {formatDate(deal.travel_end_date)}
                   </td>
+                  <td className="px-6 py-4 text-sm">
+                    {deal.expires_at ? (
+                      <div className="flex flex-col gap-1">
+                        <span className="text-gray-700">{formatDate(deal.expires_at)}</span>
+                        {(() => {
+                          const label = expiresLabel(deal.expires_at);
+                          if (!label) return null;
+                          const expired = isExpired(deal.expires_at);
+                          return (
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium w-fit ${expired ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                              <Clock className="w-3 h-3" />
+                              {label}
+                            </span>
+                          );
+                        })()}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 text-xs">No expiry</span>
+                    )}
+                  </td>
                   <td className="px-6 py-4">
-                    {deal.is_active ? (
+                    {isExpired(deal.expires_at) ? (
+                      <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                        Expired
+                      </span>
+                    ) : deal.is_active ? (
                       <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
                         Active
                       </span>

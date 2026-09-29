@@ -11,7 +11,7 @@ export default function DestinationCard({ name, imageUrl, description, onClick }
   return (
     <div
       onClick={onClick}
-      className="group cursor-pointer bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+      className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
     >
       <div className="relative h-48 overflow-hidden">
         <img

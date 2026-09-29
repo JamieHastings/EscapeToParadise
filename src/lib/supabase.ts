@@ -43,6 +43,21 @@ export interface ContactSubmission {
   created_at?: string;
 }
 
+export interface DealRequest {
+  id?: string;
+  deal_name: string;
+  deal_route?: string;
+  deal_price?: string;
+  deal_dates?: string;
+  name: string;
+  email: string;
+  phone: string;
+  travelers: number;
+  notes?: string;
+  status?: string;
+  created_at?: string;
+}
+
 export interface NewsletterSubscriber {
   id?: string;
   email: string;

@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:admin": "vite --mode admin",
     "build": "vite build",
+    "build:public": "vite build --outDir dist-public --emptyOutDir",
+    "build:admin": "vite build --mode admin --outDir dist-admin --emptyOutDir && node -e \"require('fs').rmSync('dist-admin/_redirects',{force:true})\"",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json"

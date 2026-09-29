@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plane, Hotel, Ship, Package, Shield, DollarSign, Clock, Heart, Users, Star, MessageSquare, Award, ChevronDown } from 'lucide-react';
+import { Plane, Hotel, Ship, Package, Shield, DollarSign, Clock, Heart, Users, Star, MessageSquare, Award, ChevronDown, X, Calendar, Check, Bed, Utensils, MapPin } from 'lucide-react';
 import DealCard from '../components/DealCard';
+import DestinationCard from '../components/DestinationCard';
 import IconFeature from '../components/IconFeature';
 import { supabase } from '../lib/supabase';
 
@@ -13,12 +14,22 @@ interface Deal {
   price: string;
   travelDates: string;
   imageUrl: string;
+  details?: {
+    description: string;
+    includes: string[];
+    duration: string;
+    groupSize: string;
+    accommodation: string;
+    meals: string;
+    highlights: string[];
+  };
 }
 
 export default function Home() {
   const navigate = useNavigate();
   const [deals, setDeals] = useState<Deal[]>([]);
   const [dealsLoading, setDealsLoading] = useState(true);
+  const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
 
   useEffect(() => {
     fetchDeals();
@@ -26,10 +37,12 @@ export default function Home() {
 
   const fetchDeals = async () => {
     try {
+      const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('deals')
         .select('*')
         .eq('is_active', true)
+        .or(`expires_at.is.null,expires_at.gte.${today}`)
         .order('created_at', { ascending: false })
         .limit(3);
 
@@ -43,6 +56,17 @@ export default function Home() {
         price: deal.price_per_person.toString(),
         travelDates: formatDateRange(deal.travel_start_date, deal.travel_end_date),
         imageUrl: deal.image_url,
+        details: deal.description
+          ? {
+              description: deal.description,
+              includes: deal.includes || [],
+              duration: deal.duration || '',
+              groupSize: deal.group_size || '',
+              accommodation: deal.accommodation || '',
+              meals: deal.meals || '',
+              highlights: deal.highlights || [],
+            }
+          : undefined,
       }));
 
       setDeals(formatted);
@@ -58,6 +82,15 @@ export default function Home() {
     const e = new Date(end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     return `${s} - ${e}`;
   };
+
+  const destinations = [
+    { name: 'Miami', imageUrl: 'https://images.pexels.com/photos/1456291/pexels-photo-1456291.jpeg?auto=compress&cs=tinysrgb&w=800', description: 'Beautiful beaches, vibrant nightlife, and Art Deco architecture' },
+    { name: 'New York', imageUrl: 'https://images.pexels.com/photos/290386/pexels-photo-290386.jpeg?auto=compress&cs=tinysrgb&w=800', description: 'The city that never sleeps with iconic landmarks and culture' },
+    { name: 'Punta Cana', imageUrl: 'https://images.pexels.com/photos/3601425/pexels-photo-3601425.jpeg?auto=compress&cs=tinysrgb&w=800', description: 'Paradise beaches, crystal-clear waters, and all-inclusive resorts' },
+    { name: 'Toronto', imageUrl: 'https://images.pexels.com/photos/374870/pexels-photo-374870.jpeg?auto=compress&cs=tinysrgb&w=800', description: 'Multicultural metropolis with world-class dining and entertainment' },
+    { name: 'Bahamas', imageUrl: 'https://images.pexels.com/photos/3225531/pexels-photo-3225531.jpeg?auto=compress&cs=tinysrgb&w=800', description: 'Tropical paradise with pristine beaches and turquoise waters' },
+    { name: 'London', imageUrl: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=800', description: 'Historic landmarks, royal palaces, and world-class museums' },
+  ];
 
   const services = [
     { icon: Plane, title: 'Flight Bookings', description: 'Competitive flight prices and flexible booking options' },
@@ -319,7 +352,7 @@ export default function Home() {
                 Tell us your destination and travel dates and we'll find the best flight options for you.
               </p>
               <button
-                onClick={() => navigate('/request-flight')}
+
                 className="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
               >
                 Request Flight
@@ -363,6 +396,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Popular Destinations */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Popular Destinations</h2>
+            <p className="text-gray-500 text-lg">Explore our most sought-after travel destinations</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {destinations.slice(0, 3).map((dest, index) => (
+              <DestinationCard
+                key={index}
+                name={dest.name}
+                imageUrl={dest.imageUrl}
+                description={dest.description}
+
+              />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 max-w-3xl mx-auto">
+            {destinations.slice(3).map((dest, index) => (
+              <DestinationCard
+                key={index}
+                name={dest.name}
+                imageUrl={dest.imageUrl}
+                description={dest.description}
+
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Current Deals */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -396,6 +461,7 @@ export default function Home() {
                     imageUrl={deal.imageUrl}
                     category={deal.category}
                     onBookNow={() => navigate('/deals')}
+                    onMoreInfo={() => setSelectedDeal(deal)}
                   />
                 ))}
               </div>
@@ -454,6 +520,159 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Deal Details Modal */}
+      {selectedDeal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            {/* Modal Header */}
+            <div className="relative">
+              <img
+                src={selectedDeal.imageUrl}
+                alt={selectedDeal.destination}
+                className="w-full h-64 object-cover rounded-t-2xl"
+              />
+              <button
+                onClick={() => setSelectedDeal(null)}
+                className="absolute top-4 right-4 bg-white rounded-full p-2 hover:bg-gray-100 transition-colors shadow-lg"
+              >
+                <X className="h-6 w-6 text-gray-700" />
+              </button>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                <h2 className="text-3xl font-bold text-white mb-2">{selectedDeal.destination}</h2>
+                <p className="text-white text-lg">{selectedDeal.route}</p>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8">
+              {/* Price and Dates */}
+              <div className="flex flex-wrap items-center justify-between mb-6 pb-6 border-b">
+                <div>
+                  <div className="flex items-center text-gray-600 mb-2">
+                    <Calendar className="h-5 w-5 mr-2 text-teal-500" />
+                    <span>{selectedDeal.travelDates}</span>
+                  </div>
+                  {selectedDeal.details?.duration && (
+                    <div className="text-sm text-gray-500">{selectedDeal.details.duration}</div>
+                  )}
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-gray-600">Starting from</div>
+                  <div className="text-4xl font-bold text-orange-600">${selectedDeal.price}</div>
+                  <div className="text-sm text-gray-500">per person</div>
+                </div>
+              </div>
+
+              {/* Description */}
+              {selectedDeal.details?.description && (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">About This Package</h3>
+                  <p className="text-gray-600 leading-relaxed">{selectedDeal.details.description}</p>
+                </div>
+              )}
+
+              {/* Quick Info */}
+              {(selectedDeal.details?.duration || selectedDeal.details?.groupSize || selectedDeal.details?.accommodation) && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  {selectedDeal.details?.duration && (
+                    <div className="bg-orange-50 p-4 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <Calendar className="h-5 w-5 text-orange-600 mr-2" />
+                        <span className="font-semibold text-gray-900">Duration</span>
+                      </div>
+                      <p className="text-gray-600 text-sm">{selectedDeal.details.duration}</p>
+                    </div>
+                  )}
+                  {selectedDeal.details?.groupSize && (
+                    <div className="bg-teal-50 p-4 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <Users className="h-5 w-5 text-teal-600 mr-2" />
+                        <span className="font-semibold text-gray-900">Group Size</span>
+                      </div>
+                      <p className="text-gray-600 text-sm">{selectedDeal.details.groupSize}</p>
+                    </div>
+                  )}
+                  {selectedDeal.details?.accommodation && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <Bed className="h-5 w-5 text-blue-600 mr-2" />
+                        <span className="font-semibold text-gray-900">Accommodation</span>
+                      </div>
+                      <p className="text-gray-600 text-sm">{selectedDeal.details.accommodation}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* What's Included */}
+              {selectedDeal.details?.includes && selectedDeal.details.includes.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <Check className="h-6 w-6 text-green-600 mr-2" />
+                    What's Included
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedDeal.details.includes.map((item, index) => (
+                      <div key={index} className="flex items-start">
+                        <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Meals */}
+              {selectedDeal.details?.meals && (
+                <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+                  <div className="flex items-center mb-2">
+                    <Utensils className="h-5 w-5 text-orange-600 mr-2" />
+                    <span className="font-semibold text-gray-900">Meals Included</span>
+                  </div>
+                  <p className="text-gray-600">{selectedDeal.details.meals}</p>
+                </div>
+              )}
+
+              {/* Highlights */}
+              {selectedDeal.details?.highlights && selectedDeal.details.highlights.length > 0 && (
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <MapPin className="h-6 w-6 text-orange-600 mr-2" />
+                    Package Highlights
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedDeal.details.highlights.map((highlight, index) => (
+                      <div key={index} className="flex items-start">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full mr-3 mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-700">{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Request Button */}
+              <button
+                onClick={() =>
+                  navigate('/request-deal', {
+                    state: {
+                      dealName: selectedDeal.destination,
+                      dealRoute: selectedDeal.route,
+                      dealPrice: selectedDeal.price,
+                      dealDates: selectedDeal.travelDates,
+                    },
+                  })
+                }
+                className="w-full bg-gradient-to-r from-orange-500 to-teal-500 text-white py-4 rounded-lg font-semibold text-lg hover:from-orange-600 hover:to-teal-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
+              >
+                <Plane className="h-5 w-5 mr-2" />
+                Request This Deal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

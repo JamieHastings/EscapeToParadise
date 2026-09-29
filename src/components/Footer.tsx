@@ -87,21 +87,21 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-orange-400" />
+                <Mail className="h-5 w-5 text-orange-400 shrink-0" />
                 <a
-                  href="mailto:info@escapetoparadise.com"
+                  href="mailto:audreyh@escape2paradisetravels.com"
                   className="hover:text-orange-400 transition-colors"
                 >
-                  info@escapetoparadise.com
+                  audreyh@escape2paradisetravels.com
                 </a>
               </li>
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-orange-400" />
                 <a
-                  href="tel:+18761234567"
+                  href="tel:+18765774620"
                   className="hover:text-orange-400 transition-colors"
                 >
-                  +1 (876) 123-4567
+                  +1 (876) 577-4620
                 </a>
               </li>
             </ul>

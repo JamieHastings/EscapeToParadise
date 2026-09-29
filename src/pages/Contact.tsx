@@ -14,9 +14,9 @@ export default function Contact() {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const whatsappNumber = '18761234567';
-  const businessEmail = 'info@escapetoparadise.com';
-  const businessPhone = '+1 (876) 123-4567';
+  const whatsappNumber = '18765774620';
+  const businessEmail = 'audreyh@escape2paradisetravels.com';
+  const businessPhone = '+1 (876) 577-4620';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -131,20 +131,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* WhatsApp CTA */}
-              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-                <MessageSquare className="h-12 w-12 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Chat on WhatsApp</h3>
-                <p className="text-green-100 mb-4">
-                  Get instant responses to your travel questions
-                </p>
-                <button
-                  onClick={handleWhatsAppClick}
-                  className="w-full bg-white text-green-600 py-3 rounded-lg font-semibold hover:bg-green-50 transition-all shadow-md hover:shadow-lg"
-                >
-                  Start Chat
-                </button>
-              </div>
+              {/* WhatsApp CTA — hidden for now */}
             </div>
 
             {/* Contact Form */}

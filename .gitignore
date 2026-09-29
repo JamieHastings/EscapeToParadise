@@ -8,6 +8,8 @@ lerna-debug.log*
 
 node_modules
 dist
+dist-public
+dist-admin
 dist-ssr
 *.local
 
@@ -21,3 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.env.admin
