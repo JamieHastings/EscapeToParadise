@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Plane, Hotel, Ship, Package, Shield, DollarSign, Clock, Heart, Users, Star, MessageSquare, Award, ChevronDown, X, Calendar, Check, Bed, Utensils, MapPin } from 'lucide-react';
 import DealCard from '../components/DealCard';
@@ -14,6 +15,7 @@ interface Deal {
   price: string;
   travelDates: string;
   imageUrl: string;
+  imageAlt?: string;
   details?: {
     description: string;
     includes: string[];
@@ -56,6 +58,7 @@ export default function Home() {
         price: deal.price_per_person.toString(),
         travelDates: formatDateRange(deal.travel_start_date, deal.travel_end_date),
         imageUrl: deal.image_url,
+        imageAlt: deal.image_alt || undefined,
         details: deal.description
           ? {
               description: deal.description,
@@ -108,6 +111,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Escape to Paradise Travel Agency | Jamaica Travel Agent</title>
+        <meta name="description" content="Plan your dream vacation with Audrey Hastings, a certified InteleTravel agent with 40+ years of experience. Flights, packages, cruises and more, personalised just for you." />
+      </Helmet>
 
       {/* ═══════════════════════════════════════════
           PART 1 — WHO WE ARE
@@ -459,6 +466,7 @@ export default function Home() {
                     price={deal.price}
                     travelDates={deal.travelDates}
                     imageUrl={deal.imageUrl}
+                    imageAlt={deal.imageAlt}
                     category={deal.category}
                     onBookNow={() => navigate('/deals')}
                     onMoreInfo={() => setSelectedDeal(deal)}

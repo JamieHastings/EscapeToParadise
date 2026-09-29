@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from './components/Navbar';
@@ -48,32 +49,36 @@ function Spinner() {
 function App() {
   if (AdminApp) {
     return (
-      <Router>
-        <ScrollToTop />
-        <Suspense fallback={<Spinner />}>
-          <AdminApp />
-        </Suspense>
-      </Router>
+      <HelmetProvider>
+        <Router>
+          <ScrollToTop />
+          <Suspense fallback={<Spinner />}>
+            <AdminApp />
+          </Suspense>
+        </Router>
+      </HelmetProvider>
     );
   }
 
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="min-h-screen flex flex-col">
-        <Routes>
-          <Route element={<PublicLayout />}>
-            <Route index element={<Home />} />
-            <Route path="request-flight" element={<RequestFlight />} />
-            <Route path="deals" element={<Deals />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="plan-trip" element={<PlanTrip />} />
-            <Route path="search-flights" element={<SearchFlights />} />
-            <Route path="request-deal" element={<RequestDeal />} />
-          </Route>
-        </Routes>
-      </div>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="min-h-screen flex flex-col">
+          <Routes>
+            <Route element={<PublicLayout />}>
+              <Route index element={<Home />} />
+              <Route path="request-flight" element={<RequestFlight />} />
+              <Route path="deals" element={<Deals />} />
+              <Route path="contact" element={<Contact />} />
+              <Route path="plan-trip" element={<PlanTrip />} />
+              <Route path="search-flights" element={<SearchFlights />} />
+              <Route path="request-deal" element={<RequestDeal />} />
+            </Route>
+          </Routes>
+        </div>
+      </Router>
+    </HelmetProvider>
   );
 }
 

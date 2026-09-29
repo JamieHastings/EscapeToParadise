@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, Calendar, Users, DollarSign, Mail, Phone, User, MessageSquare, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -71,6 +72,10 @@ export default function PlanTrip() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Plan Your Trip | Escape to Paradise Travel</title>
+        <meta name="description" content="Tell us about your dream trip and let Audrey Hastings create the perfect vacation plan tailored to your budget and preferences." />
+      </Helmet>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-orange-600 to-teal-500 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Plane, User, Mail, Phone, Calendar, Users, DollarSign, Clock, FileText } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CityAutocomplete from '../components/CityAutocomplete';
@@ -155,6 +156,10 @@ export default function RequestFlight() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Book a Flight | Escape to Paradise Travel</title>
+        <meta name="description" content="Submit a flight request to Audrey Hastings, your certified InteleTravel agent. Get personalised flight options for any destination worldwide." />
+      </Helmet>
       <section className="bg-gradient-to-r from-orange-500 to-teal-500 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">

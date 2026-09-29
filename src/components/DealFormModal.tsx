@@ -19,6 +19,7 @@ export default function DealFormModal({ deal, onClose, onSave }: DealFormModalPr
     travel_end_date: '',
     expires_at: '',
     image_url: '',
+    image_alt: '',
     description: '',
     duration: '',
     group_size: '',
@@ -43,6 +44,7 @@ export default function DealFormModal({ deal, onClose, onSave }: DealFormModalPr
         travel_end_date: deal.travel_end_date,
         expires_at: deal.expires_at || '',
         image_url: deal.image_url,
+        image_alt: deal.image_alt || '',
         description: deal.description || '',
         duration: deal.duration || '',
         group_size: deal.group_size || '',
@@ -70,6 +72,7 @@ export default function DealFormModal({ deal, onClose, onSave }: DealFormModalPr
         travel_end_date: formData.travel_end_date,
         expires_at: formData.expires_at || null,
         image_url: formData.image_url,
+        image_alt: formData.image_alt || null,
         is_active: formData.is_active,
       };
 
@@ -314,6 +317,20 @@ export default function DealFormModal({ deal, onClose, onSave }: DealFormModalPr
                 }}
               />
             )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Image Description
+              <span className="ml-2 text-xs text-gray-500 font-normal">(Optional — describe the image for accessibility and SEO)</span>
+            </label>
+            <input
+              type="text"
+              value={formData.image_alt}
+              onChange={(e) => setFormData({ ...formData, image_alt: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              placeholder="e.g., Aerial view of Miami Beach coastline at sunset"
+            />
           </div>
 
           {formData.type === 'Packages' && (

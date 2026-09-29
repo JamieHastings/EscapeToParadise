@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Tag, Filter, X, Check, Calendar, Users, MapPin, Utensils, Bed, Plane } from 'lucide-react';
 import DealCard from '../components/DealCard';
@@ -12,6 +13,7 @@ interface Deal {
   price: string;
   travelDates: string;
   imageUrl: string;
+  imageAlt?: string;
   details?: {
     description: string;
     includes: string[];
@@ -57,6 +59,7 @@ export default function Deals() {
         price: deal.price_per_person.toString(),
         travelDates: formatDateRange(deal.travel_start_date, deal.travel_end_date),
         imageUrl: deal.image_url,
+        imageAlt: deal.image_alt || undefined,
         details:
           deal.type === 'Packages' && deal.description
             ? {
@@ -113,6 +116,10 @@ export default function Deals() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Travel Deals & Packages | Escape to Paradise Travel</title>
+        <meta name="description" content="Browse our latest travel deals and vacation packages. Flights, cruises, hotels and all-inclusive packages at great prices from Jamaica." />
+      </Helmet>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-orange-600 to-teal-500 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -185,6 +192,7 @@ export default function Deals() {
                     price={deal.price}
                     travelDates={deal.travelDates}
                     imageUrl={deal.imageUrl}
+                    imageAlt={deal.imageAlt}
                     category={deal.category}
                     onBookNow={handleBookNow}
                     onMoreInfo={() => handleMoreInfo(deal)}

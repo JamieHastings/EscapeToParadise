@@ -11,6 +11,7 @@ export interface Deal {
   travel_end_date: string;
   expires_at: string | null;
   image_url: string;
+  image_alt: string | null;
   description: string | null;
   includes: string[] | null;
   duration: string | null;

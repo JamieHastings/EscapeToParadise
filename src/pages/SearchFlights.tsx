@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Plane, Calendar, DollarSign, Search } from 'lucide-react';
 
@@ -39,6 +40,10 @@ export default function SearchFlights() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Helmet>
+        <title>Search Flights | Escape to Paradise Travel</title>
+        <meta name="description" content="Search for available flights with Escape to Paradise Travel Agency and find the best fares for your next trip." />
+      </Helmet>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-orange-600 to-teal-500 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

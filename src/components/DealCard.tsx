@@ -6,18 +6,19 @@ interface DealCardProps {
   price: string;
   travelDates: string;
   imageUrl: string;
+  imageAlt?: string;
   category: string;
   onBookNow: () => void;
   onMoreInfo?: () => void;
 }
 
-export default function DealCard({ destination, route, price, travelDates, imageUrl, onBookNow, onMoreInfo }: DealCardProps) {
+export default function DealCard({ destination, route, price, travelDates, imageUrl, imageAlt, onBookNow, onMoreInfo }: DealCardProps) {
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
       <div className="relative h-52 overflow-hidden">
         <img
           src={imageUrl}
-          alt={destination}
+          alt={imageAlt || destination}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
